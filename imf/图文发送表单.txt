@@ -1,0 +1,10 @@
+token:1999601929
+lang:zh_CN
+f:json
+ajax:1
+random:0.10309975454583764
+type:10
+app_id:400443549
+tofakeid:2817371308
+appmsgid:400443549
+imgcode:
