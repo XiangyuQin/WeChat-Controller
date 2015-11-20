@@ -1,0 +1,23 @@
+﻿save change
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   code/monilogin.py
+#	deleted:    "imf/QQ\346\210\252\345\233\27620151103103600_\345\211\257\346\234\254.jpg"
+#
+# Untracked files:
+#	0fcbrmed.jd2.txt
+#	code/uploadimg.py
+#	code/uploadimg2.py
+#	"imf/QQ\346\210\252\345\233\27620151103103600.jpg"
+#	imf/test.jpg
+#	imf/test_img_upload.jpg
+#	imf/test_img_upload2.jpg
+#	"imf/\345\233\276\346\226\207\344\277\241\346\201\257\347\224\237\346\210\220.txt"
+#	"imf/\346\265\213\350\257\225\345\233\276\346\226\207\346\240\207\351\242\230.txt"
+#
+
