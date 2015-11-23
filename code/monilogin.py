@@ -28,11 +28,11 @@ print retread
 token=json.loads(retread) 
 
 print token
-tokenNum='1999601929'
+tokenNum='2134338630'
 app_id='400443549'
 appmsgid='400443549'
 paras2={'type':'10','error':'false','imgcode':'','tofakeid':'2817371308','token':tokenNum,'ajax':'1','app_id':app_id,'appmsgid':appmsgid}
-req2=urllib2.Request('https://mp.weixin.qq.com/cgi-bin/singlesend?t=ajax-response&f=json&token=1999601929&lang=zh_CN\\',urllib.urlencode(paras2)) 
+req2=urllib2.Request('https://mp.weixin.qq.com/cgi-bin/singlesend?t=ajax-response&f=json&token=2134338630&lang=zh_CN\\',urllib.urlencode(paras2)) 
 req2.add_header('Accept','application/json, text/javascript, */*; q=0.01') 
 req2.add_header('Accept-Encoding','gzip, deflate') 
 req2.add_header('Accept-Language','zh-CN,zh;q=0.8') 
