@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+﻿# -*- coding:utf-8 -*-
 #!/usr/bin/env python
 
 __all__ = ['weChatController']
@@ -17,7 +17,6 @@ import os
 import traceback
 from cStringIO import StringIO
 import tornado
-import chardet
 import tornado.escape
 from bs4 import BeautifulSoup
 import uuid
@@ -38,12 +37,11 @@ class WeChatController(object):
         公众平台初始化
         """  
         self.test_appmsg = {
-            'author':'接口测试文章——作者',
-            'title':'接口测试文章——标题',
+            'author':'test',
+            'title':'test_merge2',
             'sourceurl':'www.baidu.com',
             'cover':'/home/pythonDir/cover.jpg',
-            'digest':'大部分人认为表白是跟女孩确定恋爱关系非常有效的一种方法，有耐心和妹子建立深层次的联系感并对妹子产生了吸引力，妹子接 ' \
-			'受的概念就会大增其实，盲目的表白你会发现往往到最后没有任何效果。',
+            'digest':"你好",
             'content':'<p style="line-height: 25.6px; white-space: normal;"><em><span style="word-wrap: break-word; font-weight: 700;">表白，'\
 			'相信这个动作是每个人一生当中都会触发的一个行为，' \
 			'大部分人认为表白是跟女孩确定恋爱关系非常有效的一种方法，有耐心和妹子建立深层次的联系感并对妹子产生了吸引力，妹子接 ' \
@@ -61,10 +59,6 @@ class WeChatController(object):
 			'pace: normal;">这就是我们家自主开发的男神模式，它可以让你和女人的互动交流之后，让女人喜欢上你，让女人主动对你示好，对你表白。至于该怎么做，只需要关注我们' \
 			'的微信公众号，那里面有干货会告诉你。</p><p><br/></p>',
         }
-        print chardet.detect(self.test_appmsg.get('author', ''))['encoding']
-        print chardet.detect(self.test_appmsg.get('title', ''))['encoding']
-        print chardet.detect(self.test_appmsg.get('digest', ''))['encoding']
-        print chardet.detect(self.test_appmsg.get('content', ''))['encoding']
         self.lastMsg = None
         self._opener = None
         self.user = user
@@ -77,9 +71,8 @@ class WeChatController(object):
         self.msgType = {'text': 1, 'image': 2, 'audio': 3, 'news': 10, 'video': 15}
         self.login(force=force)
         #print self.upload_img(img_url='/home/pythonDir/imagestest3.jpg')
-        msgid=self.add_appmsg(self.test_appmsg)
-        print "msgid:%d" %msgid
-        self.send_mass(msgid)
+        self.add_appmsg(self.test_appmsg)
+        
 
     def _set_opener(self):
         self._opener = poster.streaminghttp.register_openers()
@@ -196,10 +189,12 @@ class WeChatController(object):
         self.lastMsg = msg
 
         # 非json格式直接返回msg
+        print 'msg', msg, type(msg)
         if jsonformat:
             try:
                 msg = json.loads(msg)
             except:
+                import chardet
                 msg = json.loads( msg.decode( chardet.detect(msg)['encoding'] ) )
         else:
             return msg
@@ -318,7 +313,7 @@ class WeChatController(object):
             appMsg = appMsgs[index]
             if not appMsg.get('file_id', None):
                 if not (appMsg.get('title') and appMsg.get('content') and appMsg.get('cover')):
-                    print "必须要有一张标题、内容和封面图片"
+                    self.logger.info("必须要有一张标题、内容和封面图片")
                     continue
                 file_id = self.upload_img(appMsg['cover'])
                 appMsg['file_id'] = file_id
@@ -378,7 +373,7 @@ class WeChatController(object):
             'AppMsgId': AppMsgId,
             'sub': 'del'
             }
-        ret = self._send_request(url, data)
+        ret = self._sendRequest(url, data)
         if ret:
             return True
         else:
@@ -403,54 +398,11 @@ class WeChatController(object):
         AppMsgId = self.addAppMsg(appMsgs)
         if not AppMsgId:
             return False
-        ret = self.send_appmsg_by_id(sendTo, AppMsgId)
+        ret = self.sendAppMsgById(sendTo, AppMsgId)
         if delete:
             self.delAppMsg(AppMsgId)
         return ret
 
-	
-    def send_mass(self, appmsgid, groupid=-1, sex=0):
-        """
-        群发图文,sex:0表示全部，1表示男，2表示女,groupid为-1表示发送给全部用户
-        """
-        url = "https://mp.weixin.qq.com/cgi-bin/masssend?t=ajax-response&token=%s&lang=zh_CN" % self.token
-        data = {
-            "type": 10,
-            "appmsgid": appmsgid,
-            "cardlimit": "1",
-            "sex": sex,
-            "groupid": groupid,
-            "synctxweibo": "0",
-            "enablecomment": "0",
-            "country": "",
-            "province": "",
-            "city": "",
-            "imgcode": "",
-            #"operation_seq": "225548905",
-        }
-        self._opener.addheaders += [('Referer', 'https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token=%s&lang=zh_CN' % self.token)]
-        ret = self._send_request(url, data)
-        data = {
-            "type": 10,
-            "appmsgid": appmsgid,
-            "cardlimit": "1",
-            "sex": sex,
-            "groupid": groupid,
-            "synctxweibo": "0",
-            "enablecomment": "0",
-            "country": "",
-            "province": "",
-            "city": "",
-            "imgcode": "",
-            "direct_send": "1",
-            "copy_msgid": appmsgid,
-            "reprint_allow_list": "",
-        }
-        ret = self._send_request(url, data)
-        if ret:
-            return True
-        else:
-            return False
 
     def get_msg_Ids(self, msgType='news', begin=0, count=None, detail=False):
         """
